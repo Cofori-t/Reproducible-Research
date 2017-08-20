@@ -1,0 +1,180 @@
+---
+title: "Reproducible Research Project1"
+author: "Ofori"
+date: "20 August 2017"
+output: html_document
+---
+
+
+```{r setoptions, echo=TRUE,results='asis'}
+  
+getwd()
+setwd("C:\\Users\\charles\\Desktop\\couseras")
+setwd("C:\\Users\\charles\\Desktop\\couseras\\course2")
+
+
+library("data.table")
+library(ggplot2)
+
+#Reading in the Dataset and proceesing the data
+
+# Creating Folder and Downloading Datasets in the folder:
+if(!file.exists("data")) dir.create("data")
+fileUrl= "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip?accessType=DOWNLOAD"
+download.file(fileUrl, destfile = "./data/Factivity.zip", mode = "wb")
+unzip("./data/Factivity.zip",exdir = "data")
+
+# Load the raw activity data
+
+library(readr)
+RData <- read.csv("./data/activity.csv")
+
+
+
+##View(RData)
+#1
+#What is mean total number of steps taken per day?
+
+##1 Make a histogram of the total number of steps taken each day
+##2 Calculate and report the mean and median total number of steps taken per day
+
+##1.1 A dataset containing the total number of steps taken each day is created.
+Sum_RData <- aggregate(RData$steps, list(RData$date), sum)
+
+##head(sum_RData)
+##str(Sum_RData)
+
+##1.2 A histogram of the above data is created as a form of visual representation
+hist(Sum_RData$x, 
+     breaks=seq(from=0, to=25000, by=2500),
+     col="red", 
+     xlab="Total number of steps", 
+     ylim=c(0, 20), 
+     main="Histogram of the total number of steps taken each day. ALL NAs are removed"
+)
+
+##2.1 mean and median total number of steps taken per day
+step_MeanData <- mean(Sum_RData$x, na.rm = TRUE)
+step_MeanData
+step_MedianData<-median(Sum_RData$x, na.rm = TRUE)
+step_MedianData
+#What is the average Daily Activity Pattern
+#Generate the average number of steps taken,ignoring NA values, 
+#per each 5-minute interval, averaged across all days.
+
+int_Steps<- aggregate(RData$steps, by=list(RData$interval), FUN=mean, na.rm=TRUE)
+colnames(int_Steps) <- c("Interval", "Average")
+
+with(int_Steps, {
+  plot(
+    x=Interval,
+    y=Average,
+    type="l",
+    lwd=2,
+    col="red",
+    main="Time-Series: Average Steps vs. Interval",
+    xlab="Time: 5-minute Interval",
+    ylab="Average Steps, Average across all Days"
+    
+  )
+})
+
+#Imputing mising Values
+
+##Finding the 5-minute interval with the maximum number of steps
+Max_int <- int_Steps[int_Steps$Average==max(int_Steps$Average),]
+Max_int
+
+##Total number of rows with NA values in original data.
+NA_count <- nrow(subset(RData, is.na(RData$steps)))
+NA_count
+##Generating New Dataset
+
+# Find the positons of NA
+p_NA <- which(is.na(RData$steps))
+
+
+# Replace the NAs by the means
+repl_mean <- rep(mean(RData$steps, na.rm=TRUE), times=length(p_NA))
+RData[p_NA, "steps"] <- repl_mean
+
+#Compute the total number of steps each day (NA values removed)
+Step_NData <- aggregate(RData$steps, by=list(RData$date), FUN=sum)
+
+# Rename the attributes
+names(Step_NData) <- c("date", "total")
+
+##A histogram of the above data is created as a form of visual representation.
+hist(Step_NData$total, 
+     breaks=seq(from=0, to=30000, by=1000),
+     col="red", 
+     xlab="Total number of steps", 
+     ylim=c(0, 20), 
+     main="Histogram of the total number of steps taken each day. ALL NAs are removed"
+)
+
+#Calculating  and report the Mean and median of the imputed genetated new dataset
+
+#Mean
+new_MeanStep <- mean(Step_NData$total)
+new_MeanStep
+#median
+new_MedianStep <- median(Step_NData$total)
+new_MedianStep
+
+#Are there differences in activity patterns between weekdays and weekends?
+RData1 <- read.csv("./data/activity.csv", stringsAsFactors=FALSE)
+
+#Process/transform the data (if necessary) into a format suitable for analysis
+# Transform the date attribute to an actual date format
+RData1$date <- as.POSIXct(RData1$date, format="%Y-%m-%d")
+
+# Compute the weekdays from the date attribute
+Weekday<- tolower(weekdays(RData1$date))
+
+RData1 <- data.frame(date=RData1$date, 
+                     weekday=Weekday, 
+                     steps=RData1$steps, 
+                     interval=RData1$interval)
+
+
+##View(RData1)
+# Compute the day type (weekend or weekday)
+RData1 <- cbind(RData1, 
+                daytype=ifelse(RData1$weekday == "samstag" | 
+                                 RData1$weekday == "sonntag", "weekend", 
+                               "weekday")) 
+
+
+##View(RData1)
+
+# Create the final data.frame
+FData <- data.frame(date=RData1$date, 
+                    weekday=RData1$weekday, 
+                    daytype=RData1$daytype, 
+                    interval=RData1$interval,
+                    steps=RData1$steps)
+
+#The new factor variable "daytype" was already in the activity data frame
+##head(activity)
+
+library(lattice)
+
+# Compute the average number of steps taken, averaged across all daytype variable
+mean_data <- aggregate(FData$steps, 
+                       by=list(FData$daytype, 
+                               FData$weekday, FData$interval), mean,na.rm=TRUE)
+
+# Rename the attributes
+names(mean_data) <- c("daytype", "weekday", "interval", "mean")
+##mean_data
+#Compute the time serie plot
+
+xyplot(mean ~ interval | daytype, mean_data, 
+       type="l", 
+       lwd=1, 
+       xlab="Interval", 
+       ylab="Number of steps", 
+       layout=c(1,2))
+
+```

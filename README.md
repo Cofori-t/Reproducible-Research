@@ -1,9 +1,5 @@
-# Reproducible-Research
-
 Introduction
-
 It is now possible to collect a large amount of data about personal movement using activity monitoring devices such as a Fitbit, Nike Fuelband, or Jawbone Up. These type of devices are part of the “quantified self” movement – a group of enthusiasts who take measurements about themselves regularly to improve their health, to find patterns in their behavior, or because they are tech geeks. But these data remain under-utilized both because the raw data are hard to obtain and there is a lack of statistical methods and software for processing and interpreting the data.
-
 This assignment makes use of data from a personal activity monitoring device. This device collects data at 5 minute intervals through out the day. The data consists of two months of data from an anonymous individual collected during the months of October and November, 2012 and include the number of steps taken in 5 minute intervals each day.
 The data for this assignment can be downloaded from the course web site:
 Dataset: Activity monitoring data [52K]
@@ -17,7 +13,6 @@ The dataset is stored in a comma-separated-value (CSV) file and there are a tota
 Review criteria
 less 
 Repo
-
 Valid GitHub URL 
 At least one commit beyond the original fork
 Valid SHA-1
@@ -34,7 +29,6 @@ Panel plot comparing the average number of steps taken per 5-minute interval acr
 All of the R code needed to reproduce the results (numbers, plots, etc.) in the report
 Assignment
 less 
-
 This assignment will be described in multiple parts. You will need to write a report that answers the questions detailed below. Ultimately, you will need to complete the entire assignment in a single R markdown document that can be processed by knitr and be transformed into an HTML file.
 Throughout your report make sure you always include the code that you used to generate the output you present. When writing code chunks in the R markdown document, always use 
 echo = TRUE
@@ -47,7 +41,6 @@ Show any code that is needed to
 Load the data (i.e. 
 read.csv()
 )
-
 Process/transform the data (if necessary) into a format suitable for your analysis
 What is mean total number of steps taken per day?
 For this part of the assignment, you can ignore the missing values in the dataset.
@@ -59,7 +52,6 @@ Make a time series plot (i.e. 
 type = "l"
 ) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
 Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
-
 Imputing missing values
 Note that there are a number of days/intervals where there are missing values (coded as 
 NA
@@ -98,3 +90,8 @@ In addition to submitting the URL for your GitHub repository, you will need to s
 Going to your GitHub repository web page for this assignment
 Click on the “?? commits” link where ?? is the number of commits you have in the repository. For example, if you made a total of 10 commits to this repository, the link should say “10 commits”.
 You will see a list of commits that you have made to this repository. The most recent commit is at the very top. If this represents the version of the files you want to submit, then just click the “copy to clipboard” button on the right hand side that should appear when you hover over the SHA-1 hash. Paste this SHA-1 hash into the course web site when you submit your assignment. If you don't want to use the most recent commit, then go down and find the commit you want and copy the SHA-1 hash.
+A valid submission will look something like (this is just an example!)
+
+1
+2
+3
